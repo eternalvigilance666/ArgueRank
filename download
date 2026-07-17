@@ -1,0 +1,79 @@
+# ARGUERANK
+
+**Ranked internet arguing. Scored like a sport.**
+
+Every day, millions of people fight in comment sections — and every one of those arguments scrolls away unscored. No verdict, no rank, no lesson. ArgueRank turns that energy into a competitive game: two humans matched over the internet for a timed, text-only debate, judged after the bell by a dual AI panel that scores every dodge, every fallacy, and every killshot — with receipts.
+
+> This argument really happened. It just scrolled away unscored. ArgueRank makes it count.
+
+---
+
+## Origin story
+
+This project started with a real Instagram comment war under a meme called *"Ideology tug of war."* Forty comments, topic hijacks, dodged questions, one clean killshot, and a walk-away ending — all the raw material of a great ranked match, captured by nothing and scored by no one.
+
+The demo in this repo restages that exact debate as a broadcast bout, complete with the momentum rope, live flags, and a dual-judge scorecard. It's the product thesis in ninety seconds: **arguing well should count for something.**
+
+## The demo
+
+`arguerank-replay.jsx` — a self-running exhibition replay (napole0n.ai-style: zero setup, just watch).
+
+- **The rope** — a live tug-of-war momentum bar that shifts after every turn
+- **Broadcast presentation** — typewriter turns, crowd reactions, live viewer count, killshot slow-moment
+- **Spectator flags** — tap any statement mid-bout to throw ⚑ off-topic / ⚑ dodge flags
+- **Verdict reveal** — unanimous-decision flash, then an animated dual-judge scorecard
+- **Receipts rule** — every score cites the exact turn that earned it
+
+No backend, no API keys, no accounts. Pure React.
+
+### Run it
+
+```bash
+npm create vite@latest arguerank -- --template react
+cd arguerank && npm install
+# replace src/App.jsx with arguerank-replay.jsx
+npm run dev
+```
+
+Add `<script src="https://cdn.tailwindcss.com"></script>` to `index.html` `<head>` for layout classes.
+
+## The product (beyond the demo)
+
+The demo is AI vs. AI for spectacle. **The real product is human vs. human** — the AI never argues for you; it only judges, reviews, and coaches.
+
+| System | What it does |
+|---|---|
+| **Matchmaking** | Quick match, topic queues, ranked bands, private challenge codes — chess.com for arguing |
+| **Format** | Pure text, alternating turns, shot clock, statement cap. No video, no faces, no production value — just the argument |
+| **Dual AI judging** | Two independent judges with opposed rubrics (logic vs. rhetoric). Scores on clarity, logic, evidence, composure, persuasion, topic discipline. Panel average decides; margins under 0.3 are a draw |
+| **Receipts** | Strongest moment, weakest moment, fallacies called by name — every claim cites a turn number |
+| **Coaching** | 2–3 specific recommendations per player, per judge, after every bout |
+| **Ranking** | Elo per topic. Bronze → Grandmaster. "Plat in Religion, Gold in Politics" is an identity |
+| **Spectators** | Live bouts, real-time flags, clippable verdict cards |
+
+**Design principle:** the scoring system *is* the culture system. If dodges, drift, and insults lose points, good faith becomes the dominant strategy — not because of rules, but because the meta punishes bad faith.
+
+## Repo contents
+
+| File | Description |
+|---|---|
+| `arguerank-replay.jsx` | The cinematic exhibition demo (start here) |
+| `arguerank-demo.jsx` | Exhibition mode with live AI-generated bouts + scripted fallback |
+| `arguerank.jsx` | Multiplayer prototype (matchmaking, turn sync, Elo ladder) — built on Claude artifact storage; needs a real backend (Firebase/Supabase) to run outside Claude |
+
+## Roadmap
+
+- [ ] Real backend for matchmaking + turn sync
+- [ ] Shareable verdict-card image export (the clip that markets itself)
+- [ ] Topic-specific ladders and seasonal resets
+- [ ] Spectator feed of live ranked bouts
+- [ ] Conduct-band matchmaking (good faith plays good faith)
+- [ ] Rematch / run-it-back flow
+
+## Status
+
+Pre-launch concept demo. Not accepting contributions yet.
+
+## License
+
+Copyright © 2026. All rights reserved. Viewing permitted; no reproduction, modification, distribution, or commercial use without written permission.
