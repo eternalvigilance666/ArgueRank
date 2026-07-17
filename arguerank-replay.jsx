@@ -1,0 +1,517 @@
+import { useState, useEffect, useRef } from "react";
+
+/* ═════════════════════════════════════════════════════════
+   ARGUERANK — EXHIBITION REPLAY
+   The real bout: ddxddxy vs brucelee_wannabe, restaged as a
+   ranked match. Scripted from the actual exchange (side
+   threads and slurs trimmed). Dual judges score it with
+   turn-numbered receipts. Signature visual: the tug-of-war
+   momentum rope — a nod to the meme that started the fight.
+   ═════════════════════════════════════════════════════════ */
+
+const C = {
+  bg: "#07090E", panel: "#10141C", panel2: "#161B26", line: "#232B3B",
+  text: "#ECEEF3", mut: "#8B94A8", dim: "#59627A",
+  red: "#FF4A3A", redDk: "#2E100C", redGlow: "rgba(255,74,58,0.55)",
+  blue: "#4C9BFF", blueDk: "#0C1A30", blueGlow: "rgba(76,155,255,0.55)",
+  gold: "#E7B54C", green: "#3DDC84",
+};
+const DISPLAY = { fontFamily: '"Arial Black","Arial Bold",Arial,sans-serif', letterSpacing: "0.02em" };
+const MONO = { fontFamily: 'ui-monospace,"SF Mono",Menlo,Consolas,monospace' };
+
+const RESOLUTION = "Christian nationalism is aligned with Jesus's teachings";
+const RED = "brucelee_wannabe";   // affirms
+const BLUE = "ddxddxy";           // challenges
+
+/* ── the actual exchange, restaged as alternating turns.
+      momentum = RED's share of the rope (0–100). ── */
+const BOUT = [
+  { by: "A", momentum: 57, reactions: ["👀"], text:
+    "Christian nationalists—who are actually nationalist, and I'm not talking about some Judeo-Christian Republicans—follow Christ more than anybody. You should be glad you live in a society built off of Christian morals." },
+  { by: "B", momentum: 48, reactions: ["🔥"], text:
+    "Christian nationalism ideology is built off of racist fascist ideology. I don't think you understand what you're claiming. It's inherently contradictory to Jesus's teachings." },
+  { by: "A", momentum: 52, reactions: ["👨‍⚖️"], text:
+    "You can't even describe fascism—nor do you even know who created it. If you knew what fascism was you would realize it was never racial LOL." },
+  { by: "B", momentum: 44, reactions: ["👏"], text:
+    "I have to know who created fascism to know christian nationalism, fascism, and racism are contradictory to jesus's teachings?" },
+  { by: "A", momentum: 39, reactions: ["😬", "⚑"], flagHint: "off-topic", text:
+    "Fascism isn't a racist ideology. It puts the nation first, not the race. National socialism is what puts race above the nation. It's xenophobic at best. Either way, the greatest societies are the ones that are homogenous." },
+  { by: "B", momentum: 35, reactions: ["🔥", "🔥"], text:
+    "There you go lol. Your christian nationalist doctrine summed up—racism which you cloak as xenophobia, fascism 'the greatest societies'—and you think either of those things were taught by jesus." },
+  { by: "A", momentum: 40, reactions: ["🤔"], text:
+    "Racism and xenophobia are two different things. Jesus's teachings weren't a legal system, they were a moral doctrine. Protecting your Christian nation by not mass importing people who are against Christianity would not be against Christ's teachings." },
+  { by: "B", momentum: 33, reactions: ["👏", "👏"], text:
+    "Your methods to protect the christian nation were not taught by jesus at all mate—which is what I've been trying to tell you this whole time." },
+  { by: "A", momentum: 38, reactions: ["👀"], text:
+    "Jesus didn't say to let non-Christians overtake your government and destroy your cultural homogenous society. There's a reason why Heaven is a Theocracy and not everyone gets in." },
+  { by: "B", momentum: 29, reactions: ["🔥"], text:
+    "So that justifies breaking a long list of other things jesus taught? Because I certainly don't remember jesus teaching xenophobia." },
+  { by: "A", momentum: 33, reactions: ["😅", "⚑"], flagHint: "dodge", text:
+    "Jesus didn't teach people how to breathe, read, or talk. Either way, xenophobia is a made-up term. Sticking to people culturally similar to you is natural." },
+  { by: "B", momentum: 16, reactions: ["💀", "🔥", "🔥", "🔥"], killshot: true, text:
+    "So now it's just natural, and that justifies it? It's natural for me to want to commit lust or gluttony. That makes it okay—because it's natural? As christians I thought we held ourselves to a higher standard?" },
+  { by: "A", momentum: 23, reactions: ["😵", "⚑"], flagHint: "dodge", text:
+    "Are you comparing sin to sticking with your tribe? There's a reason why the Israelites stuck together. And ICE isn't ripping families apart—they came here illegally and are criminals for doing so. Did Jesus preach committing crime?" },
+  { by: "B", momentum: 10, reactions: ["🏁", "👑"], text:
+    "My argument was never right or wrong about immigration. I'm asking you to fundamentally reconsider christian nationalist ideology being aligned with jesus's teachings." },
+];
+
+/* ── scripted dual-judge review with turn-numbered receipts ── */
+const REVIEW = {
+  avgA: 4.18, avgB: 7.94, winner: "B",
+  judges: [
+    {
+      name: "JUDGE I · THE LOGICIAN",
+      a: { clarity: 5.5, logic: 3.5, evidence: 3.0, composure: 5.5, persuasion: 4.0, topicAdherence: 4.5,
+        strongest: "T7 — the only turn that attempts the actual thesis: framing Jesus's teachings as moral doctrine, not law, to carve room for national policy.",
+        weakest: "T11 — answered a moral challenge with 'it's natural,' an appeal to nature that T12 immediately detonated. Never repaired.",
+        recs: ["Carry your burden: the resolution claims alignment with Jesus's teachings — cite the teachings. Zero scripture appeared on your side.", "When your defense shifts from 'Jesus taught this' to 'it's natural / it's ancient / it's legal,' you've left the resolution. Judges track the drift."] },
+      b: { clarity: 8.0, logic: 8.5, evidence: 6.5, composure: 7.5, persuasion: 8.0, topicAdherence: 9.0,
+        strongest: "T12 — accepted the 'natural' premise and showed it proves nothing inside Christian ethics. The bout's only true killshot, and it went unanswered.",
+        weakest: "T6 — mockery ('there you go lol') diluted an otherwise clean summary of the opponent's concession.",
+        recs: ["Land the killshot question earlier — your winning frame ('show me where Jesus taught this') didn't appear cleanly until mid-bout.", "Add one concrete source; your card was all structure. A single cited teaching makes T10 unanswerable."] },
+      fallacies: [
+        { who: "A", name: "Appeal to nature", note: "T11 — 'sticking to similar people is natural' offered as moral justification." },
+        { who: "A", name: "Appeal to tradition / legality", note: "T13 — 'they're criminals' substitutes law for the moral question asked." },
+        { who: "A", name: "Credential gatekeeping", note: "T3 — demands fascism scholarship instead of defending the thesis." },
+      ],
+      summaryA: "RED defended nationalism on its own terms — homogeneity, tradition, legality — and asserted rather than demonstrated its alignment with Jesus.",
+      summaryB: "BLUE held one question the entire bout — did Jesus teach this? — and converted every RED defense into evidence it was never answered.",
+    },
+    {
+      name: "JUDGE II · RINGSIDE",
+      a: { clarity: 6.0, logic: 4.0, evidence: 3.5, composure: 6.0, persuasion: 4.5, topicAdherence: 4.0,
+        strongest: "T13's closing counter-question — 'did Jesus preach committing crime?' — the one moment RED put BLUE on defense.",
+        weakest: "T5 — 'the greatest societies are homogenous' conceded BLUE's entire characterization mid-bout. Spectators flagged it live; the rope never came back.",
+        recs: ["Answer flagged turns head-on the next statement — two dodge flags stood unaddressed and both were scored.", "Your instinct to relocate the fight (fascism trivia, ICE, legality) reads as retreat on a scored card. Hold one hill."] },
+      b: { clarity: 8.5, logic: 8.0, evidence: 6.0, composure: 7.0, persuasion: 8.5, topicAdherence: 9.5,
+        strongest: "T14 — the closer collapsed thirteen turns of detours into one sentence and re-centered the resolution. Elite topic discipline.",
+        weakest: "Occasional heat (T6) — the arguments were strong enough that the jab only cost composure tenths.",
+        recs: ["Bank composure: your calmest turns (T12, T14) were your highest-scoring. The pattern is the lesson.", "Convert momentum into questions — after T12 landed, a follow-up question would have forced a concession on record."] },
+      fallacies: [
+        { who: "A", name: "Motte-and-bailey", note: "T7→T11 — retreats from 'aligned with Jesus' to 'not against Christ's teachings' to 'it's natural.'" },
+        { who: "B", name: "Ad hominem (minor)", note: "T6 — mockery noted; did not carry argumentative weight." },
+      ],
+      summaryA: "RED fought hard on ground the resolution never asked about, and lost the ground it did.",
+      summaryB: "BLUE played rope-a-dope with topic discipline, absorbed the detours, and won with a question RED never answered.",
+    },
+  ],
+};
+
+/* ── animated count-up ── */
+function useCountUp(target, run, ms = 1100) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    if (!run) return;
+    let raf, t0;
+    const step = t => {
+      if (!t0) t0 = t;
+      const p = Math.min(1, (t - t0) / ms);
+      setV(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [run, target, ms]);
+  return v;
+}
+
+const STYLES = `
+@keyframes ar-rise { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-90px); opacity: 0; } }
+@keyframes ar-in { from { transform: translateY(14px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes ar-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes ar-shimmer { 0% { background-position: -300px 0; } 100% { background-position: 300px 0; } }
+@keyframes ar-flash { 0% { opacity: 0; } 12% { opacity: 1; } 100% { opacity: 1; } }
+@keyframes ar-zoom { from { transform: scale(0.82); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes ar-shake { 0%,100% { transform: translateX(0);} 20% { transform: translateX(-5px);} 40% { transform: translateX(5px);} 60% { transform: translateX(-3px);} 80% { transform: translateX(3px);} }
+@keyframes ar-scan { from { transform: translateY(-100%);} to { transform: translateY(100vh);} }
+.ar-msg { animation: ar-in 0.45s ease both; }
+.ar-kill { animation: ar-shake 0.5s ease 0.1s; }
+@media (prefers-reduced-motion: reduce) { .ar-msg, .ar-kill { animation: none; } }
+`;
+
+export default function ArgueRankReplay() {
+  const [phase, setPhase] = useState("landing"); // landing | bout | flash | verdict
+  const [msgs, setMsgs] = useState([]);
+  const [typing, setTyping] = useState(null);
+  const [momentum, setMomentum] = useState(50);
+  const [speed, setSpeed] = useState(1);
+  const [viewers, setViewers] = useState(1284);
+  const [floats, setFloats] = useState([]);
+  const [flags, setFlags] = useState({});
+  const scrollRef = useRef(null);
+  const abortRef = useRef(false);
+  const speedRef = useRef(1);
+  useEffect(() => { speedRef.current = speed; }, [speed]);
+
+  useEffect(() => {
+    const t = setInterval(() => setViewers(v => Math.max(900, v + Math.floor(Math.random() * 31) - 14)), 1800);
+    return () => clearInterval(t);
+  }, []);
+  useEffect(() => { scrollRef.current?.scrollTo({ top: 999999, behavior: "smooth" }); }, [msgs, typing, phase]);
+
+  const wait = ms => new Promise(r => setTimeout(r, ms / speedRef.current));
+
+  function spawnFloats(emojis, side) {
+    const items = emojis.map((e, i) => ({ id: Math.random(), e, side, left: 8 + Math.random() * 20, delay: i * 220 }));
+    setFloats(f => [...f, ...items]);
+    setTimeout(() => setFloats(f => f.filter(x => !items.includes(x))), 2600);
+  }
+
+  async function play() {
+    abortRef.current = false;
+    setMsgs([]); setMomentum(50); setFlags({}); setPhase("bout");
+    for (let i = 0; i < BOUT.length; i++) {
+      if (abortRef.current) return;
+      const turn = BOUT[i];
+      // typewriter
+      setTyping({ by: turn.by, shown: "" });
+      const step = Math.max(3, Math.floor(turn.text.length / 55));
+      for (let c = 0; c <= turn.text.length; c += step) {
+        if (abortRef.current) return;
+        setTyping({ by: turn.by, shown: turn.text.slice(0, c) });
+        await wait(30);
+      }
+      setTyping(null);
+      setMsgs(m => [...m, { ...turn, id: i }]);
+      setMomentum(turn.momentum);
+      spawnFloats(turn.reactions, turn.by);
+      await wait(turn.killshot ? 2000 : 1300);
+    }
+    await wait(700);
+    setPhase("flash");
+    await wait(2400 * speedRef.current >= 2400 ? 2400 : 2400); // fixed beat
+    setPhase("verdict");
+  }
+
+  function stop() { abortRef.current = true; setTyping(null); setPhase("landing"); setMsgs([]); }
+  function flagMsg(id, kind) { setFlags(f => ({ ...f, [id]: [...(f[id] || []).filter(k => k !== kind), kind] })); }
+
+  const shell = kids => (
+    <div className="min-h-screen w-full flex justify-center relative overflow-hidden" style={{ background: C.bg, color: C.text }}>
+      <style>{STYLES}</style>
+      {/* arena lighting */}
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", background:
+        `radial-gradient(ellipse 60% 40% at 15% 0%, ${C.redGlow.replace("0.55", "0.10")}, transparent 60%),
+         radial-gradient(ellipse 60% 40% at 85% 0%, ${C.blueGlow.replace("0.55", "0.10")}, transparent 60%),
+         radial-gradient(ellipse 90% 60% at 50% 110%, rgba(231,181,76,0.06), transparent 70%)` }} />
+      {/* scanline */}
+      <div style={{ position: "fixed", left: 0, right: 0, height: 120, pointerEvents: "none", opacity: 0.05,
+        background: `linear-gradient(180deg, transparent, ${C.text}, transparent)`, animation: "ar-scan 9s linear infinite" }} />
+      <div className="w-full flex flex-col relative" style={{ maxWidth: 480, minHeight: "100vh" }}>{kids}</div>
+      {/* floating reactions */}
+      {floats.map(f => (
+        <div key={f.id} style={{ position: "fixed", bottom: 110, fontSize: 26, pointerEvents: "none",
+          [f.side === "A" ? "left" : "right"]: `${f.left}%`,
+          animation: `ar-rise 2.4s ease-out ${f.delay}ms both` }}>{f.e}</div>
+      ))}
+    </div>
+  );
+
+  /* ═══ LANDING ═══ */
+  if (phase === "landing") return shell(
+    <div className="flex-1 flex flex-col justify-center px-6 py-10 gap-6">
+      <div style={{ animation: "ar-in 0.6s ease both" }}>
+        <div style={{ ...MONO, fontSize: 10, color: C.gold, letterSpacing: "0.3em", animation: "ar-pulse 2.4s infinite" }}>● EXHIBITION REPLAY</div>
+        <div style={{ ...DISPLAY, fontSize: 52, lineHeight: 0.95, marginTop: 6,
+          textShadow: `0 0 40px ${C.redGlow.replace("0.55", "0.25")}` }}>
+          ARGUE<span style={{ color: C.red }}>RANK</span>
+        </div>
+        <div style={{ fontSize: 15, color: C.mut, marginTop: 12, lineHeight: 1.6 }}>
+          A real comment-section war, restaged as a ranked bout. Fourteen turns. One resolution.
+          Two AI judges scoring every dodge, every fallacy, every killshot — with receipts.
+        </div>
+      </div>
+
+      {/* fight poster */}
+      <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${C.line}`, animation: "ar-in 0.6s ease 0.15s both" }}>
+        <div className="flex">
+          <div className="flex-1 p-4" style={{ background: `linear-gradient(160deg, ${C.redDk}, ${C.panel})` }}>
+            <div style={{ ...MONO, fontSize: 9, color: C.red, letterSpacing: "0.2em" }}>RED · AFFIRMS</div>
+            <div style={{ ...DISPLAY, fontSize: 17, textShadow: `0 0 18px ${C.redGlow}` }}>{RED}</div>
+            <div style={{ ...MONO, fontSize: 9, color: C.dim, marginTop: 4 }}>style: relocate & reload</div>
+          </div>
+          <div className="flex items-center px-2" style={{ ...DISPLAY, fontSize: 15, color: C.gold, background: C.panel }}>VS</div>
+          <div className="flex-1 p-4 text-right" style={{ background: `linear-gradient(200deg, ${C.blueDk}, ${C.panel})` }}>
+            <div style={{ ...MONO, fontSize: 9, color: C.blue, letterSpacing: "0.2em" }}>BLUE · CHALLENGES</div>
+            <div style={{ ...DISPLAY, fontSize: 17, textShadow: `0 0 18px ${C.blueGlow}` }}>{BLUE}</div>
+            <div style={{ ...MONO, fontSize: 9, color: C.dim, marginTop: 4 }}>style: one question, held</div>
+          </div>
+        </div>
+        <div className="p-3 text-center" style={{ background: C.panel, borderTop: `1px solid ${C.line}` }}>
+          <div style={{ ...MONO, fontSize: 9, color: C.mut, letterSpacing: "0.2em" }}>THE RESOLUTION</div>
+          <div style={{ fontSize: 14, fontWeight: 800, marginTop: 2 }}>“{RESOLUTION}”</div>
+        </div>
+      </div>
+
+      <div style={{ animation: "ar-in 0.6s ease 0.3s both" }}>
+        <button onClick={play} className="w-full rounded-xl"
+          style={{ ...DISPLAY, fontSize: 18, padding: "16px", color: C.bg, cursor: "pointer", border: "none",
+            background: `linear-gradient(90deg, ${C.red}, ${C.gold})`, boxShadow: `0 0 34px ${C.redGlow.replace("0.55", "0.35")}` }}>
+          ▶ WATCH THE BOUT
+        </button>
+        <div style={{ ...MONO, fontSize: 10, color: C.dim, lineHeight: 1.7, marginTop: 12 }}>
+          Restaged from the actual exchange (side threads and one bigoted aside trimmed; wording otherwise intact).
+          In the full product both corners are humans matched over the internet — the AI never argues, it only judges.
+          Tap a statement mid-bout to throw a ⚑ flag.
+        </div>
+      </div>
+    </div>
+  );
+
+  /* ═══ VERDICT FLASH ═══ */
+  if (phase === "flash") return shell(
+    <div className="flex-1 flex flex-col items-center justify-center px-6 text-center" style={{ animation: "ar-flash 0.4s ease both" }}>
+      <div style={{ ...MONO, fontSize: 11, color: C.mut, letterSpacing: "0.3em" }}>THE JUDGES HAVE IT</div>
+      <div style={{ ...DISPLAY, fontSize: 44, color: C.blue, marginTop: 10, animation: "ar-zoom 0.6s ease both",
+        textShadow: `0 0 60px ${C.blueGlow}` }}>
+        {BLUE}
+      </div>
+      <div style={{ ...DISPLAY, fontSize: 20, color: C.gold, marginTop: 4, animation: "ar-zoom 0.6s ease 0.25s both" }}>
+        WINS · UNANIMOUS DECISION
+      </div>
+      <div style={{ ...MONO, fontSize: 13, color: C.mut, marginTop: 10, animation: "ar-in 0.5s ease 0.5s both" }}>
+        {REVIEW.avgB.toFixed(2)} — {REVIEW.avgA.toFixed(2)}
+      </div>
+    </div>
+  );
+
+  /* ═══ BOUT + VERDICT ═══ */
+  return shell(
+    <div className="flex-1 flex flex-col" style={{ minHeight: "100vh" }}>
+      {/* broadcast header */}
+      <div style={{ borderBottom: `1px solid ${C.line}`, background: C.panel }}>
+        <div className="flex items-center justify-between px-3 py-1">
+          <div className="flex items-center gap-2">
+            <span style={{ width: 8, height: 8, borderRadius: 99, background: phase === "verdict" ? C.dim : C.red,
+              display: "inline-block", animation: phase === "verdict" ? "none" : "ar-pulse 1.6s infinite" }} />
+            <span style={{ ...MONO, fontSize: 10, letterSpacing: "0.18em", color: phase === "verdict" ? C.mut : C.red }}>
+              {phase === "verdict" ? "FULL CARD" : "LIVE"}
+            </span>
+          </div>
+          <span style={{ ...MONO, fontSize: 10, color: C.mut }}>👁 {viewers.toLocaleString()}</span>
+        </div>
+        <div className="flex">
+          <div className="flex-1 px-3 py-1" style={{ background: C.redDk }}>
+            <div style={{ ...DISPLAY, fontSize: 13, color: C.text }}>{RED}</div>
+          </div>
+          <div className="flex-1 px-3 py-1 text-right" style={{ background: C.blueDk }}>
+            <div style={{ ...DISPLAY, fontSize: 13, color: C.text }}>{BLUE}</div>
+          </div>
+        </div>
+        {/* ── THE ROPE — tug-of-war momentum ── */}
+        <div className="px-3 py-2">
+          <div style={{ position: "relative", height: 14, borderRadius: 99, overflow: "hidden", border: `1px solid ${C.line}`, background: C.bg }}>
+            <div style={{ position: "absolute", inset: 0, width: `${momentum}%`, transition: "width 0.9s cubic-bezier(.2,.9,.3,1)",
+              background: `linear-gradient(90deg, ${C.red}, ${C.redDk})`, boxShadow: `0 0 16px ${C.redGlow}` }} />
+            <div style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: `${100 - momentum}%`, transition: "width 0.9s cubic-bezier(.2,.9,.3,1)",
+              background: `linear-gradient(90deg, ${C.blueDk}, ${C.blue})`, boxShadow: `0 0 16px ${C.blueGlow}` }} />
+            {/* knot */}
+            <div style={{ position: "absolute", top: -2, bottom: -2, left: `calc(${momentum}% - 7px)`, width: 14, borderRadius: 99,
+              background: C.gold, boxShadow: `0 0 14px ${C.gold}`, transition: "left 0.9s cubic-bezier(.2,.9,.3,1)" }} />
+          </div>
+          <div className="flex justify-between mt-1">
+            <span style={{ ...MONO, fontSize: 8, color: C.red, letterSpacing: "0.15em" }}>PULLING ◀</span>
+            <span style={{ ...MONO, fontSize: 8, color: C.dim, letterSpacing: "0.15em" }}>IDEOLOGY TUG OF WAR</span>
+            <span style={{ ...MONO, fontSize: 8, color: C.blue, letterSpacing: "0.15em" }}>▶ PULLING</span>
+          </div>
+        </div>
+        <div className="px-3 pb-2 text-center">
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.mut }}>“{RESOLUTION}”</div>
+        </div>
+        {phase === "bout" && (
+          <div className="flex items-center justify-between px-3 pb-2">
+            <span style={{ ...MONO, fontSize: 9, color: C.gold, letterSpacing: "0.1em" }}>
+              TURN {Math.min(msgs.length + 1, BOUT.length)}/{BOUT.length} · TAP TO ⚑ FLAG
+            </span>
+            <div className="flex gap-1">
+              {[1, 2, 3].map(s => (
+                <button key={s} onClick={() => setSpeed(s)}
+                  style={{ ...MONO, fontSize: 10, padding: "2px 8px", borderRadius: 5, cursor: "pointer", background: "transparent",
+                    border: `1px solid ${speed === s ? C.gold : C.line}`, color: speed === s ? C.gold : C.mut }}>{s}×</button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* transcript */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-2">
+        {msgs.map(m => (
+          <Bubble key={m.id} m={m} extraFlags={flags[m.id]} onFlag={flagMsg} canFlag={phase === "bout"} />
+        ))}
+        {typing && (
+          <div className={typing.by === "A" ? "self-start" : "self-end"} style={{ maxWidth: "86%" }}>
+            <div className="rounded-xl px-3 py-2" style={{ background: typing.by === "A" ? C.redDk : C.blueDk,
+              border: `1px solid ${typing.by === "A" ? "rgba(255,74,58,0.35)" : "rgba(76,155,255,0.35)"}` }}>
+              <div style={{ ...MONO, fontSize: 9, letterSpacing: "0.1em", color: typing.by === "A" ? C.red : C.blue }}>
+                {typing.by === "A" ? RED : BLUE} · typing
+              </div>
+              <div style={{ fontSize: 14, lineHeight: 1.45 }}>{typing.shown}<span style={{ color: C.gold }}>▌</span></div>
+            </div>
+          </div>
+        )}
+        {phase === "verdict" && <Verdict />}
+      </div>
+
+      <div className="p-3 flex gap-2" style={{ borderTop: `1px solid ${C.line}` }}>
+        <button onClick={stop} className="flex-1 rounded-lg py-3"
+          style={{ ...MONO, fontSize: 12, color: C.mut, background: "transparent", border: `1px solid ${C.line}`, cursor: "pointer" }}>
+          ← NEW REPLAY
+        </button>
+        {phase === "verdict" && (
+          <button onClick={play} className="flex-1 rounded-lg py-3"
+            style={{ ...DISPLAY, fontSize: 13, color: C.bg, background: C.gold, border: "none", cursor: "pointer" }}>
+            RUN IT BACK
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Bubble({ m, extraFlags, onFlag, canFlag }) {
+  const [open, setOpen] = useState(false);
+  const isA = m.by === "A";
+  const col = isA ? C.red : C.blue;
+  const allFlags = [...(m.flagHint ? [m.flagHint] : []), ...(extraFlags || [])];
+  return (
+    <div className={`ar-msg ${m.killshot ? "ar-kill" : ""} ${isA ? "self-start" : "self-end"}`} style={{ maxWidth: "86%" }}>
+      <div onClick={() => canFlag && setOpen(o => !o)} className="rounded-xl px-3 py-2"
+        style={{ background: isA ? C.redDk : C.blueDk, cursor: canFlag ? "pointer" : "default",
+          border: `1px solid ${m.killshot ? C.gold : isA ? "rgba(255,74,58,0.3)" : "rgba(76,155,255,0.3)"}`,
+          boxShadow: m.killshot ? `0 0 26px rgba(231,181,76,0.35)` : "none" }}>
+        <div className="flex items-center gap-2">
+          <span style={{ ...MONO, fontSize: 9, color: col, letterSpacing: "0.1em" }}>{isA ? RED : BLUE} · T{m.id + 1}</span>
+          {m.killshot && <span style={{ ...MONO, fontSize: 8, color: C.gold, border: `1px solid ${C.gold}`, borderRadius: 4, padding: "1px 5px", letterSpacing: "0.12em" }}>KILLSHOT</span>}
+        </div>
+        <div style={{ fontSize: 14, lineHeight: 1.5, marginTop: 2 }}>{m.text}</div>
+        {allFlags.length > 0 && (
+          <div className="flex gap-1 mt-1 flex-wrap">
+            {allFlags.map((f, i) => (
+              <span key={i} style={{ ...MONO, fontSize: 9, color: C.gold, border: `1px solid ${C.line}`, borderRadius: 4, padding: "1px 6px" }}>⚑ {f}</span>
+            ))}
+          </div>
+        )}
+      </div>
+      {open && (
+        <div className="flex gap-2 mt-1">
+          {["off-topic", "dodge"].map(k => (
+            <button key={k} onClick={() => { onFlag(m.id, k); setOpen(false); }}
+              style={{ ...MONO, fontSize: 10, color: C.gold, background: C.panel, border: `1px solid ${C.line}`, borderRadius: 6, padding: "3px 8px", cursor: "pointer" }}>
+              ⚑ {k}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══ animated scorecard ═══ */
+function Verdict() {
+  const [view, setView] = useState(2);
+  const [shown, setShown] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setShown(true), 150); return () => clearTimeout(t); }, []);
+  const a = useCountUp(REVIEW.avgA, shown);
+  const b = useCountUp(REVIEW.avgB, shown);
+  const j = REVIEW.judges[Math.min(view, 1)];
+  const crits = ["clarity", "logic", "evidence", "composure", "persuasion", "topicAdherence"];
+  const avg = (s, k) => (REVIEW.judges[0][s][k] + REVIEW.judges[1][s][k]) / 2;
+
+  const Bar = ({ label, va, vb }) => (
+    <div className="py-1" style={{ borderBottom: `1px solid ${C.line}` }}>
+      <div className="flex justify-between">
+        <span style={{ ...MONO, fontSize: 12, fontWeight: 700, color: va > vb ? C.red : C.text }}>{va.toFixed(1)}</span>
+        <span style={{ ...MONO, fontSize: 9, color: C.mut, letterSpacing: "0.12em" }}>{label}</span>
+        <span style={{ ...MONO, fontSize: 12, fontWeight: 700, color: vb > va ? C.blue : C.text }}>{vb.toFixed(1)}</span>
+      </div>
+      <div className="flex gap-1 mt-1">
+        <div style={{ flex: 1, height: 4, borderRadius: 99, background: C.bg, overflow: "hidden", transform: "scaleX(-1)" }}>
+          <div style={{ height: "100%", width: shown ? `${va * 10}%` : 0, background: C.red, transition: "width 1s ease 0.2s" }} />
+        </div>
+        <div style={{ flex: 1, height: 4, borderRadius: 99, background: C.bg, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: shown ? `${vb * 10}%` : 0, background: C.blue, transition: "width 1s ease 0.2s" }} />
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-3" style={{ animation: "ar-in 0.5s ease both" }}>
+      {/* banner */}
+      <div className="rounded-2xl p-4 text-center" style={{ background: C.panel, border: `2px solid ${C.blue}`, boxShadow: `0 0 34px ${C.blueGlow.replace("0.55", "0.25")}` }}>
+        <div style={{ ...MONO, fontSize: 9, color: C.mut, letterSpacing: "0.25em" }}>UNANIMOUS DECISION</div>
+        <div style={{ ...DISPLAY, fontSize: 28, color: C.blue, textShadow: `0 0 22px ${C.blueGlow}` }}>{BLUE} WINS</div>
+        <div className="flex justify-center items-baseline gap-3 mt-1">
+          <span style={{ ...MONO, fontSize: 22, fontWeight: 700, color: C.red }}>{a.toFixed(2)}</span>
+          <span style={{ ...MONO, fontSize: 11, color: C.dim }}>—</span>
+          <span style={{ ...MONO, fontSize: 22, fontWeight: 700, color: C.blue }}>{b.toFixed(2)}</span>
+        </div>
+      </div>
+
+      {/* tabs */}
+      <div className="flex gap-2">
+        {[REVIEW.judges[0].name, REVIEW.judges[1].name, "PANEL AVG"].map((t, i) => (
+          <button key={t} onClick={() => setView(i)}
+            style={{ ...MONO, fontSize: 8.5, flex: 1, padding: "8px 3px", borderRadius: 8, cursor: "pointer", letterSpacing: "0.05em",
+              background: view === i ? C.panel2 : "transparent", color: view === i ? C.gold : C.mut,
+              border: `1px solid ${view === i ? C.gold : C.line}` }}>{t}</button>
+        ))}
+      </div>
+
+      {/* tale of the tape */}
+      <div className="rounded-xl p-4" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
+        <div className="flex justify-between mb-2">
+          <span style={{ ...MONO, fontSize: 10, color: C.red }}>{RED}</span>
+          <span style={{ ...MONO, fontSize: 10, color: C.blue }}>{BLUE}</span>
+        </div>
+        {crits.map(k => (
+          <Bar key={k} label={k === "topicAdherence" ? "ON-TOPIC" : k.toUpperCase()}
+            va={view === 2 ? avg("a", k) : j.a[k]} vb={view === 2 ? avg("b", k) : j.b[k]} />
+        ))}
+      </div>
+
+      {/* receipts */}
+      {view < 2 && (
+        <div className="rounded-xl p-4 flex flex-col gap-3" style={{ background: C.panel, border: `1px solid ${C.line}` }}>
+          {["a", "b"].map(s => (
+            <div key={s}>
+              <div style={{ ...MONO, fontSize: 9, letterSpacing: "0.15em", color: s === "a" ? C.red : C.blue }}>
+                {s === "a" ? RED : BLUE} — RECEIPTS
+              </div>
+              <div style={{ fontSize: 12.5, lineHeight: 1.55, marginTop: 2 }}><span style={{ color: C.green }}>▲</span> {j[s].strongest}</div>
+              <div style={{ fontSize: 12.5, lineHeight: 1.55 }}><span style={{ color: C.red }}>▼</span> {j[s].weakest}</div>
+              <div style={{ ...MONO, fontSize: 9, color: C.gold, marginTop: 6, letterSpacing: "0.12em" }}>CORNER ADVICE</div>
+              {j[s].recs.map((r, i) => <div key={i} style={{ fontSize: 12.5, lineHeight: 1.55 }}>• {r}</div>)}
+            </div>
+          ))}
+          <div>
+            <div style={{ ...MONO, fontSize: 9, color: C.mut, letterSpacing: "0.15em" }}>FALLACIES CALLED</div>
+            {j.fallacies.map((f, i) => (
+              <div key={i} style={{ fontSize: 12, color: C.mut, marginTop: 2 }}>
+                <span style={{ fontWeight: 800, color: f.who === "A" ? C.red : C.blue }}>{f.who === "A" ? "RED" : "BLUE"}</span>
+                {" · "}<span style={{ color: C.text }}>{f.name}</span> — {f.note}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* summaries */}
+      <div className="rounded-xl p-4" style={{ background: C.panel2, border: `1px solid ${C.line}` }}>
+        <div style={{ ...MONO, fontSize: 9, color: C.mut, letterSpacing: "0.15em", marginBottom: 4 }}>THE PANEL'S READ</div>
+        <div style={{ fontSize: 12.5, lineHeight: 1.6 }}><span style={{ color: C.red, fontWeight: 800 }}>RED · </span>{REVIEW.judges[0].summaryA}</div>
+        <div style={{ fontSize: 12.5, lineHeight: 1.6, marginTop: 6 }}><span style={{ color: C.blue, fontWeight: 800 }}>BLUE · </span>{REVIEW.judges[0].summaryB}</div>
+      </div>
+
+      <div className="rounded-xl p-3 text-center" style={{ border: `1px dashed ${C.line}` }}>
+        <div style={{ ...MONO, fontSize: 10, color: C.mut, lineHeight: 1.7 }}>
+          THIS ARGUMENT REALLY HAPPENED — it just scrolled away unscored. ArgueRank makes it count:
+          humans debate over the internet, judges score with receipts, ranks move, and you leave
+          every bout with your next lesson.
+        </div>
+      </div>
+    </div>
+  );
+}
